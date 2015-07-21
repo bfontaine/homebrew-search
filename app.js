@@ -1,3 +1,0 @@
-var s = [[TERMS]];
-
-// TODO
