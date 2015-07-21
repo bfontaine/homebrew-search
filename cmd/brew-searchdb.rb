@@ -60,7 +60,11 @@ class DB
   attr_reader :items
 
   def init!
-    @items = Formula.map { |f| Item.new(f) }
+    @items = []
+    Formula.each do |f|
+      next unless f.desc
+      @items << Item.new(f)
+    end
     nil
   end
 
