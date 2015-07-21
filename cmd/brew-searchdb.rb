@@ -51,7 +51,7 @@ class Item
   private
 
   def _terms
-    clean_desc.split(WS) - STOPWORDS + @name.split("/")
+    clean_desc.split(WS) + @name.split("/") - STOPWORDS
   end
 end
 
