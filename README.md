@@ -1,10 +1,12 @@
 # Homebrew Search
 
-An unofficial Web-based search-engine for [Homebrew](http://brew.sh/) formulae.
+An unofficial Web-based search engine for [Homebrew](http://brew.sh/) formulae.
+
+## DB
+
+    brew searchdb dump terms.json
 
 ## Web page
 
-Build with:
-
-1. `jsx -x jsx src build`
-2. `./gen.rb`
+    jsx -x jsx src build
+    ./gen.rb
