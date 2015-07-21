@@ -25,7 +25,7 @@ homebrew
 ]
 
 MAN_CAT = /\b\(\d\)/
-PUNCTUATION = /[:.,;(){}\[\]"`]/
+PUNCTUATION = /[:.,;(){}\[\]"`&]/
 WS = /\s+/
 
 class Item
