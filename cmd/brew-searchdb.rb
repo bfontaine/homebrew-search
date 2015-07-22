@@ -48,6 +48,10 @@ class Item
     return terms.include? term
   end
 
+  def to_h
+    {:n => @name, :d => @desc}
+  end
+
   private
 
   def _terms
@@ -55,71 +59,65 @@ class Item
   end
 end
 
-# This is just a PoC, it could really be optimized
 class DB
-  attr_reader :items
-
-  def init!
-    @items = []
-    Formula.each do |f|
-      next unless f.desc
-      @items << Item.new(f)
-    end
-    nil
-  end
-
-  def terms
-    s = Set.new
-    @items.each { |i| i.terms.each { |t| s.add(t) } }
-    s.to_a
-  end
-
   def dump(filename)
     File.open(filename, "w") { |f| f.write to_json }
   end
 
   def compile!
-    @compiled = compile
+    compiled
     nil
   end
 
-  def search(*terms)
-    idx = terms.map { |t| @compiled[:t][t] || [] }.reduce(&:&)
-    idx.map { |i| @compiled[:i][i] }
+  def items
+    compiled[:i]
+  end
+
+  def terms
+    compiled[:t]
   end
 
   def to_json
-    to_h.to_json
+    compiled.to_json
   end
 
   def to_h
-    @compiled || @compiled = compile
+    compiled
   end
 
   private
 
-  def compile
-    itemls = items.map { |i| {:n => i.name, :d => i.desc} }
+  def compiled
+    @compiled || @compiled = compile
+  end
 
-    vs = terms.map do |term|
-      [
-        term,
-        items.select { |item| item.match? term }.map do |item|
-          itemls.index { |i| i[:n] == item.name }
-        end
-      ]
+  def compile
+    items = []
+    terms = {}
+    idx = 0
+
+    Formula.each do |f|
+      next unless f.desc
+      i = Item.new(f)
+
+      items << i.to_h
+
+      i.terms.each do |t|
+        terms[t] ||= []
+        terms[t] << idx
+      end
+
+      idx += 1
     end
 
-    {:i => itemls, :t => Hash[vs]}
+    {:i => items, :t => terms}
   end
 end
 
 case ARGV.shift
 when "dump"
-  ohai "Creating the DB..."
+  ohai "Compiling the DB..."
   db = DB.new
-  db.init!
-  ohai "Optimizing for search..."
   db.compile!
   ohai "Writing..."
   db.dump(*ARGV)
