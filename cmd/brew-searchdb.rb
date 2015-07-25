@@ -102,7 +102,7 @@ class DB
       next unless f.desc && f.stable
       i = Item.new(f)
       h = i.to_h
-      exs = h[:e] = executables.fetch(f.full_name, [])
+      exs = h[:e] = f.keg_only? ? [] : executables.fetch(f.full_name, [])
 
       items << h
 
