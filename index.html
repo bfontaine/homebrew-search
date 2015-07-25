@@ -3,12 +3,21 @@
   <head>
     <meta charset="utf-8" />
     <title>Homebrew Formulae Search</title>
+    <link href="vendor/bootstrap.min.css" rel="stylesheet"/>
+    <link href="s.css" rel="stylesheet"/>
   </head>
   <body>
-    <h1>Non-official Homebrew Formulae Search</title>
+    <div class="container">
+      <h1>Homebrew Formulae Search</h1>
 
-    <input id="q" type="text" />
-    <div id="results"></div>
+      <form class="q-container">
+        <input id="q" type="text"
+              class="input-lg form-control"
+              placeholder="e.g. git, ruby, ..."
+              autocomplete="off" />
+      </form>
+      <div id="results"></div>
+    </div>
 
     <script src="vendor/react.min.js"></script>
     <script src="s.js"></script>
