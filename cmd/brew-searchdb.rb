@@ -29,11 +29,13 @@ PUNCTUATION = /[:.,;(){}\[\]"`]/
 WS = /\s+/
 
 class Item
-  attr_reader :name, :desc
+  attr_reader :name, :desc, :version, :homepage
 
   def initialize(f)
     @name = f.full_name
     @desc = f.desc || ""
+    @version = f.version.to_s
+    @homepage = f.homepage
   end
 
   def terms
@@ -41,7 +43,7 @@ class Item
   end
 
   def to_h
-    {:n => @name, :d => @desc}
+    {:n => @name, :d => @desc, :v => @version, :h => @homepage}
   end
 
   private
