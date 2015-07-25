@@ -13,6 +13,6 @@ On the `master` branch:
 On the `gh-pages` branch:
 
     jsx -x jsx src build
-    ./gen.rb
+    ./scripts/gen.rb
 
 Then commit and push.
