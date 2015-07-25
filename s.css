@@ -1,0 +1,7 @@
+#results ol {
+  list-style-type: none;
+}
+
+.q-container {
+  max-width: 40em;
+}
