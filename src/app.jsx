@@ -1,13 +1,22 @@
 var s = [[TERMS]];
 
+var baseRepoURL = "https://github.com/Homebrew/homebrew";
+
 var Formula = React.createClass({
   render: function() {
     return (
       <li class="formula">
-        <h2 class="name">{this.props.name}</h2>
+        <h2 class="title">
+          <span class="name">{this.props.name}</span>
+          {" "}
+          (<span class="version">{this.props.version}</span>)
+        </h2>
+        <ul class="meta-links">
+          <li><a href={this.props.homepage} rel="external nofollow">Homepage</a></li>
+        </ul>
         <p class="desc">{this.props.desc}</p>
         <ul class="executables">
-          {this.props.executables.map(function(e) {
+          {this.props.exes.map(function(e) {
             return (
               <li>{e}</li>
             );
@@ -35,8 +44,9 @@ var Results = React.createClass({
   render: function() {
     return (
       <ol>
-        {this.state.results.map(function(r) {
-          return <Formula name={r.n} desc={r.d} executables={r.e}/>;
+        {this.state.results.map(function(f) {
+          return <Formula name={f.n} desc={f.d} exes={f.e}
+                          homepage={f.h} version={f.v} />;
         })}
       </ol>
     );
@@ -90,28 +100,25 @@ function matchingDocs(terms) {
 }
 
 function scoreDocTerm(term, doc) {
-  /*
-    term == name: 100
-    term == executable: 90
-    name starts with term: 80
-    name starts with one letter then the term: 70
-  */
-
+  // term == name: 100
   if (term == doc.n) {
     return 100;
   }
 
+  // term == executable: 90
   if (doc.e.indexOf(term) > -1) {
     return 90;
   }
 
   var nameTermIndex = doc.n.indexOf(term);
 
-  if (nameTermIndex == 0) {
-    return 80;
-  }
-  if (nameTermIndex == 1) {
-    return 70;
+  // name starts with term: 80
+  // name starts with one letter then the term: 70
+  switch (nameTermIndex) {
+  case -1: break;
+  case 0: return 80;
+  case 1: return 70;
+  // we might want to add more cases here
   }
 
   return 1;
