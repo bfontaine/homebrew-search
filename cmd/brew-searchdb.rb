@@ -109,7 +109,7 @@ class DB
       items << h
 
       # only keep max 10 executables, the longuest ones first
-      exs_terms = exs.sort {|a,b| b.length <=> a.length }.slice(0, 10)
+      exs_terms = exs.sort {|a,b| b.length <=> a.length }.slice(0, 10).map(&:downcase)
 
       (i.terms + exs_terms).each do |t|
         (terms[t] ||= []) << idx
