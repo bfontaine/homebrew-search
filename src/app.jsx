@@ -1,5 +1,23 @@
 var s = [[TERMS]];
 
+var Formula = React.createClass({
+  render: function() {
+    return (
+      <li class="formula">
+        <h2 class="name">{this.props.name}</h2>
+        <p class="desc">{this.props.desc}</p>
+        <ul class="executables">
+          {this.props.executables.map(function(e) {
+            return (
+              <li>{e}</li>
+            );
+          })}
+        </ul>
+      </li>
+    );
+  }
+});
+
 var Results = React.createClass({
   getInitialState: function() {
     return {results: []};
@@ -13,7 +31,7 @@ var Results = React.createClass({
     return (
       <ol>
         {this.state.results.map(function(r) {
-          return <li>{r.n}{r.d ? ": " + r.d : ""}</li>;
+          return <Formula name={r.n} desc={r.d} executables={r.e}/>;
         })}
       </ol>
     );
