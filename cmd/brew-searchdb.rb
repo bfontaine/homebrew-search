@@ -40,14 +40,6 @@ class Item
     @terms || @terms = _terms
   end
 
-  def clean_desc
-    @desc.downcase.gsub(MAN_CAT, "").gsub(PUNCTUATION, " ")
-  end
-
-  def match?(term)
-    return terms.include? term
-  end
-
   def to_h
     {:n => @name, :d => @desc}
   end
@@ -56,6 +48,10 @@ class Item
 
   def _terms
     clean_desc.split(WS) + @name.split("/") - STOPWORDS
+  end
+
+  def clean_desc
+    @desc.downcase.gsub(MAN_CAT, "").gsub(PUNCTUATION, " ")
   end
 end
 
