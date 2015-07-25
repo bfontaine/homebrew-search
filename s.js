@@ -3,6 +3,10 @@ var s = {"i":[{"n":"a2ps","d":"Any-to-PostScript filter","v":"4.14","h":"https:/
 var baseRepoURL = "https://github.com/Homebrew/homebrew";
 
 var Formula = React.createClass({displayName: "Formula",
+  binaries: function() {
+    var n = this.props.exes.length;
+    return n === 0 ? "" : n > 1 ? "Binaries:" : "Binary:";
+  },
   render: function() {
     return (
       React.createElement("li", {class: "formula"}, 
@@ -15,6 +19,7 @@ var Formula = React.createClass({displayName: "Formula",
           React.createElement("li", null, React.createElement("a", {href: this.props.homepage, rel: "external nofollow"}, "Homepage"))
         ), 
         React.createElement("p", {class: "desc"}, this.props.desc), 
+        this.binaries(), 
         React.createElement("ul", {class: "executables"}, 
           this.props.exes.map(function(e) {
             return (
