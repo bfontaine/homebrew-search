@@ -27,6 +27,11 @@ var Results = React.createClass({
       results: res.slice(0, 10),
     });
   },
+  reset: function() {
+    this.setState({
+      results: [],
+    });
+  },
   render: function() {
     return (
       <ol>
@@ -89,6 +94,7 @@ function scoreDocTerm(term, doc) {
     term == name: 100
     term == executable: 90
     name starts with term: 80
+    name starts with one letter then the term: 70
   */
 
   if (term == doc.n) {
@@ -97,6 +103,15 @@ function scoreDocTerm(term, doc) {
 
   if (doc.e.indexOf(term) > -1) {
     return 90;
+  }
+
+  var nameTermIndex = doc.n.indexOf(term);
+
+  if (nameTermIndex == 0) {
+    return 80;
+  }
+  if (nameTermIndex == 1) {
+    return 70;
   }
 
   return 1;
@@ -108,12 +123,11 @@ function scoreDocTerms(terms, doc) {
   terms.forEach(function(term) {
     var s = scoreDocTerm(term, doc);
 
-    console.log("term:", term, "name:", doc.n, "score:", s);
-
     if (s > maxScore) {
       maxScore = s;
     }
   });
+
   return maxScore;
 }
 
@@ -151,10 +165,15 @@ function _searchCallback() {
       idxs = [],
       terms;
 
-  if (query == prevquery || query.length < 2) {
+  if (query == prevquery) {
     return;
   }
   prevquery = query;
+
+  if (query.length < 2) {
+    results.reset();
+    return;
+  }
 
   terms = getTerms(query);
 
@@ -165,11 +184,15 @@ function _searchCallback() {
   var lastTerm = terms[terms.length-1];
   if (lastTerm == "") {
     terms.pop();
-  } else {
-    terms = terms.concat(expandPartialTerm(lastTerm));
   }
 
   var docs = sortDocs(terms, matchingDocs(terms));
+
+  // if no results, try with partial matching
+  if (docs.length == 0) {
+    terms = terms.concat(expandPartialTerm(lastTerm));
+    docs = sortDocs(terms, matchingDocs(terms));
+  }
 
   results.setResults(docs);
 }
