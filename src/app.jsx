@@ -3,6 +3,10 @@ var s = [[TERMS]];
 var baseRepoURL = "https://github.com/Homebrew/homebrew";
 
 var Formula = React.createClass({
+  binaries: function() {
+    var n = this.props.exes.length;
+    return n === 0 ? "" : n > 1 ? "Binaries:" : "Binary:";
+  },
   render: function() {
     return (
       <li class="formula">
@@ -15,6 +19,7 @@ var Formula = React.createClass({
           <li><a href={this.props.homepage} rel="external nofollow">Homepage</a></li>
         </ul>
         <p class="desc">{this.props.desc}</p>
+        {this.binaries()}
         <ul class="executables">
           {this.props.exes.map(function(e) {
             return (
