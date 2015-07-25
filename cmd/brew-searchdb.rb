@@ -97,14 +97,13 @@ class DB
     idx = 0
 
     Formula.each do |f|
-      next unless f.desc
+      next unless f.desc && f.stable
       i = Item.new(f)
 
       items << i.to_h
 
       i.terms.each do |t|
-        terms[t] ||= []
-        terms[t] << idx
+        (terms[t] ||= []) << idx
       end
 
       idx += 1
@@ -116,8 +115,9 @@ end
 
 case ARGV.shift
 when "dump"
-  ohai "Compiling the DB..."
+  ohai "Creating the DB..."
   db = DB.new
+  ohai "Compiling..."
   db.compile!
   ohai "Writing..."
   db.dump(*ARGV)
