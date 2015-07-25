@@ -87,6 +87,10 @@ class DB
 
   private
 
+  def executables
+    @executables || @executables = import_executables
+  end
+
   def compiled
     @compiled || @compiled = compile
   end
@@ -99,10 +103,12 @@ class DB
     Formula.each do |f|
       next unless f.desc && f.stable
       i = Item.new(f)
+      h = i.to_h
+      exs = h[:e] = executables.fetch(f.full_name, [])
 
-      items << i.to_h
+      items << h
 
-      i.terms.each do |t|
+      (i.terms + exs).each do |t|
         (terms[t] ||= []) << idx
       end
 
@@ -110,6 +116,20 @@ class DB
     end
 
     {:i => items, :t => terms}
+  end
+
+  def import_executables
+    s = Pathname.new(HOMEBREW_PREFIX)/"Library/Taps/homebrew/homebrew-command-not-found/executables.txt"
+    return {} unless s.exist?
+
+    ex = {}
+    s.each_line do |l|
+      f, es = l.chomp.split(":")
+      next if es.nil?
+      ex[f] = es.split(" ")
+    end
+
+    ex
   end
 end
 
