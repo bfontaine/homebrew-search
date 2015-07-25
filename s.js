@@ -43,39 +43,134 @@ var results = React.render(React.createElement(Results, null), document.getEleme
 var q = document.getElementById("q"),
     prevquery = "";
 
+function getTerms(query) {
+  // sorry no quotes for now
+  return query.toLowerCase().replace('"', "").split(/\s+/);
+}
+
+function escapeRegExp(r) {
+  return r.replace(/([.(){}\[\]*+?^$])/g, "\\$1")
+}
+
+function expandPartialTerm(partial) {
+  var r = new RegExp("^" + escapeRegExp(partial) + "."),
+      ts = [],
+      max = 5;
+
+  for (var t in s.t) {
+    if (r.test(t)) {
+      if (max-- == 0) {
+        break;
+      }
+      ts.push(t);
+    }
+  }
+
+  return ts;
+}
+
+function matchingDocs(terms) {
+  var docs = {};
+
+  terms.forEach(function(term) {
+    var idxs = s.t[term];
+    if (!idxs || !idxs.length) { return; }
+
+    idxs.forEach(function(idx) {
+      docs[idx] = s.i[idx];
+    });
+  });
+
+  return docs;
+}
+
+function scoreDocTerm(term, doc) {
+  /*
+    term == name: 100
+    term == executable: 90
+  */
+
+  if (term == doc.n) {
+    return 100;
+  }
+
+  if (doc.e.indexOf(term) > -1) {
+    return 90;
+  }
+
+  return 1;
+}
+
+function scoreDocTerms(terms, doc) {
+  var maxScore = 0;
+
+  terms.forEach(function(term) {
+    var s = scoreDocTerm(term, doc);
+
+    console.log("term:", term, "name:", doc.n, "score:", s);
+
+    if (s > maxScore) {
+      maxScore = s;
+    }
+  });
+  return maxScore;
+}
+
+function sortDocs(terms, docs) {
+  var scored = [],
+      doc;
+
+  for (var name in docs) {
+    doc = docs[name];
+    scored.push([doc, scoreDocTerms(terms, doc)]);
+  }
+
+  return scored.sort(function(a, b) {
+    var sa = a[1],
+        sb = b[1];
+
+    return sa == sb ? 0 : sa < sb ? 1 : -1;
+  }).map(function(s) { return s[0]; });
+}
+
+var searching = false;
+
 function searchCallback() {
+  if (searching) { return; }
+  searching = true;
+  try {
+    _searchCallback();
+  } finally {
+    searching = false;
+  }
+}
+
+function _searchCallback() {
   var query = q.value,
       idxs = [],
       terms;
 
-  if (query == prevquery) {
+  if (query == prevquery || query.length < 2) {
     return;
   }
   prevquery = query;
 
-  terms = query.toLocaleLowerCase().split(/\s+/);
+  terms = getTerms(query);
 
-  terms.forEach(function(term) {
-    var i = s.t[term];
-    if (!i || !i.length) { return; }
+  if (terms.length == 0) {
+    return
+  }
 
-    if (idxs.length > 2) {
-      var newidxs = [];
-      i.forEach(function(idx) {
-        if (idxs.indexOf(idx) > -1) {
-          newidxs.push(idx)
-        }
-      });
+  var lastTerm = terms[terms.length-1];
+  if (lastTerm == "") {
+    terms.pop();
+  } else {
+    terms = terms.concat(expandPartialTerm(lastTerm));
+  }
 
-      idxs = newidxs;
+  var docs = sortDocs(terms, matchingDocs(terms));
 
-      return;
-    }
-
-    idxs = idxs.concat(i);
-  });
-
-  results.setResults(idxs.map(function(i) { return s.i[i]; }));
+  results.setResults(docs);
 }
 
 q.addEventListener("change", searchCallback, false);
