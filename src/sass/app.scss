@@ -1,20 +1,9 @@
 @import "vendor/_bootstrap";
-
-h1 {
-  margin-bottom: 20px;
-}
+@import "_layout";
 
 .q-container {
   margin-top: 60px;
-
-  .q {
-    margin: auto;
-    max-width: 40em;
-  }
-}
-
-#results ol {
-  list-style-type: none;
+  margin-bottom: 10px;
 }
 
 .tap-name {
@@ -22,15 +11,38 @@ h1 {
   color: #999;
 }
 
-.executables {
-  li {
-    font-family: menlo, monospace;
-  }
+#results ol {
+  padding-left: 10px;
 }
 
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 30px;
+.formula {
+  list-style-type: none;
+  padding-bottom: 20px;
+
+  .title {
+    font-weight: normal;
+
+    .name {
+      font-weight: bold;
+    }
+  }
+
+  .desc {
+    font-size: 1.1em;
+  }
+
+  .executables {
+    font-family: menlo, monospace;
+    list-style-type: none;
+    padding-left: 10px;
+
+    li {
+      font-size: 0.9em;
+      display: inline-block;
+      padding: 2px 4px;
+      margin: 3px 3px;
+      background-color: #DDD;
+      border-radius: 2px;
+    }
+  }
 }

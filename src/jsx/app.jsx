@@ -40,10 +40,8 @@ let Formula = React.createClass({
           {" "}
           (<span className="version">{this.props.version}</span>)
         </h2>
-        <ul className="meta-links">
-          <li><a href={this.props.homepage} rel="external nofollow">Homepage</a></li>
-        </ul>
-        <p className="desc">{this.props.desc}</p>
+        <p className="desc"><span>{this.props.desc}</span> — <a href={this.props.homepage} rel="external nofollow">Homepage</a></p>
+        <pre class="install"><code>brew install {this.props.name}</code></pre>
         {this.binaries()}
         <ul className="executables">
           {this.props.exes.map(e => <li key={e}>{e}</li>)}
