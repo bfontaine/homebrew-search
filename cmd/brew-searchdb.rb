@@ -108,6 +108,11 @@ class Item
         next
       end
 
+      # brew & git subcommands
+      if t.start_with?("brew-") || t.start_with?("git-")
+        t.split("-").each { |v| s << v }
+      end
+
       # split terms like "Foo/Bar" into "Foo" and "Bar"
       if t.include? "/"
         s.delete t
