@@ -21,16 +21,49 @@ we've were weren't what what's when when's where where's which while who who's
 whom why why's with won't would wouldn't you you'd you'll you're you've your
 yours yourself yourselves
 
-homebrew /
+homebrew other others et increase tool nobody behind old friendly lots free
+1
+-like -f
+| / ' <-> > '*
 ]
 
-MAN_CAT = /\b\(\d\)/
-PUNCTUATION = /[:.,;(){}\[\]"`]/
+# ls(1) -> ls
+MAN_CATEGORY = /\b\(\d\)/
+
+# foo, bar, qux -> foo bar qux
+PUNCTUATION = /[:.,;(){}\[\]"`!$]/
+
+# 2.0.0 -> <nothing>
+VERSION_S = /\b\d+\.\d+(?:\.\d+)\b/
+
+# 'foo -> foo
+# foo' -> foo
+# foo's -> foo
+QUOTES = /\b's\b|'(?:\b|\s|$)|(?:\b|\s|^)'/
+
+# single-
+END_HYPHEN = /\b-(\s|$)/
+
+# html2pdf
+FMT2FMT = /(\w{2,})2(\w{2,})/
+
+# spaces
 WS = /\s+/
 
 ALIASES = {
   "cli" => %w[cli command-line],
   "http(s)" => %w[http https],
+  "bash" => %w[bash shell],
+  "zsh" => %w[zsh shell],
+  "utf8" => %w[utf8 utf-8],
+  "utf-8" => %w[utf8 utf-8],
+  "go" => %w[go golang],
+  "osm" => %w[openstreetmap],
+  "db" => %w[database],
+  "databases" => %w[database],
+  "lib" => %w[library],
+  "js" => %w[javascript],
+  "frontend" => %w[front-end],
 }
 
 class Item
@@ -62,11 +95,41 @@ class Item
       end
     end
 
+    s.clone.each do |t|
+      # remove JARs
+      if t.end_with? ".jar"
+        s.delete t
+        next
+      end
+
+      # remove too-long terms
+      if t.length > 25
+        s.delete t
+        next
+      end
+
+      # split terms like "Foo/Bar" into "Foo" and "Bar"
+      if t.include? "/"
+        s.delete t
+        t.split("/").each { |v| s << v }
+      end
+
+      # index both parts of, e.g. "ps2pdf" ("ps" and "pdf")
+      if t =~ FMT2FMT
+        s << $1 << $2
+      end
+    end
+
     s.to_a
   end
 
   def clean_desc
-    @desc.downcase.gsub(MAN_CAT, "").gsub(PUNCTUATION, " ")
+    @desc.downcase.gsub(MAN_CATEGORY, "").
+      gsub(VERSION_S, "").
+      gsub(QUOTES, "").
+      gsub(PUNCTUATION, " ").
+      gsub(END_HYPHEN, " ").
+      strip
   end
 end
 
@@ -129,7 +192,7 @@ class DB
       idx += 1
     end
 
-    {:i => items, :t => terms}
+    {:i => items, :t => terms, :a => ALIASES}
   end
 
   def import_executables
