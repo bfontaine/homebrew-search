@@ -21,7 +21,7 @@ we've were weren't what what's when when's where where's which while who who's
 whom why why's with won't would wouldn't you you'd you'll you're you've your
 yours yourself yourselves
 
-homebrew
+homebrew /
 ]
 
 MAN_CAT = /\b\(\d\)/
@@ -29,7 +29,8 @@ PUNCTUATION = /[:.,;(){}\[\]"`]/
 WS = /\s+/
 
 ALIASES = {
-  "cli" => "command-line",
+  "cli" => %w[cli command-line],
+  "http(s)" => %w[http https],
 }
 
 class Item
@@ -54,8 +55,11 @@ class Item
 
   def _terms
     s = Set.new (clean_desc.split(WS) + @name.split("/") - STOPWORDS)
-    ALIASES.each_entry do |k,v|
-      s << v if s.include? k
+    ALIASES.each_entry do |k,vs|
+      if s.include? k
+        s.delete k
+        vs.each { |v| s << v }
+      end
     end
 
     s.to_a
