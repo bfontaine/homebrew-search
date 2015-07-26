@@ -87,7 +87,21 @@ let q = document.getElementById("q"),
 
 function getTerms(query) {
   // sorry no quotes for now
-  return query.toLowerCase().replace('"', "").split(/\s+/);
+  let words = query.toLowerCase().replace('"', "").split(/\s+/),
+      terms = [],
+      a = s.a;
+
+  words.forEach((w) => {
+    // use aliases
+    if (a.hasOwnProperty(w)) {
+      terms = terms.concat(a[w]);
+      return;
+    }
+
+    terms.push(w);
+  });
+
+  return terms;
 }
 
 function escapeRegExp(r) {
