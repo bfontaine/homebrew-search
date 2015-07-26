@@ -253,3 +253,9 @@ function _searchCallback() {
 q.addEventListener("change", searchCallback, false);
 q.addEventListener("keyup", searchCallback, false);
 q.focus();
+
+var hash = document.location.hash.slice(1);
+if (hash !== "" && q.value === "") {
+  q.value = decodeURIComponent(hash);
+  searchCallback();
+}
