@@ -127,14 +127,17 @@ function matchingDocs(terms) {
 }
 
 function scoreDocTerm(term, doc) {
+  // -1 if the formula is from a tap: put the core ones above
+  let score = doc.n.indexOf("/") > -1 ? -1 : 0;
+
   // term == name: 100
   if (term == doc.n) {
-    return 100;
+    return score + 100;
   }
 
   // term == executable: 90
   if (doc.e.indexOf(term) > -1) {
-    return 90;
+    return score + 90;
   }
 
   var nameTermIndex = doc.n.indexOf(term);
@@ -143,12 +146,12 @@ function scoreDocTerm(term, doc) {
   // name starts with one letter then the term: 70
   switch (nameTermIndex) {
   case -1: break;
-  case 0: return 80;
-  case 1: return 70;
+  case 0: return score + 80;
+  case 1: return score + 70;
   // we might want to add more cases here
   }
 
-  return 1;
+  return score + 2;
 }
 
 function scoreDocTerms(terms, doc) {
