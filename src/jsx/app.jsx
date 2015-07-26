@@ -1,5 +1,7 @@
 var s = [[TERMS]];
 
+var React = require("./vendor/react.min");
+
 var baseRepoURL = "https://github.com/Homebrew/homebrew";
 
 var Formula = React.createClass({
