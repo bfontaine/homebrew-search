@@ -28,6 +28,10 @@ MAN_CAT = /\b\(\d\)/
 PUNCTUATION = /[:.,;(){}\[\]"`]/
 WS = /\s+/
 
+ALIASES = {
+  "cli" => "command-line",
+}
+
 class Item
   attr_reader :name, :desc, :version, :homepage
 
@@ -49,7 +53,12 @@ class Item
   private
 
   def _terms
-    clean_desc.split(WS) + @name.split("/") - STOPWORDS
+    s = Set.new (clean_desc.split(WS) + @name.split("/") - STOPWORDS)
+    ALIASES.each_entry do |k,v|
+      s << v if s.include? k
+    end
+
+    s.to_a
   end
 
   def clean_desc
