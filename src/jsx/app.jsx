@@ -1,9 +1,32 @@
-/*jslint esnext:true */
+/*jshint esnext:true */
 let s = [[TERMS]];
 
 import React from "react";
 
 let baseRepoURL = "https://github.com/Homebrew/homebrew";
+
+let Name = React.createClass({
+  tapName: function() {
+    let name = this.props.name;
+
+    if (name.indexOf("/") == -1) { return ""; }
+    let [u, r, _] = name.split("/");
+    /* jshint ignore:start */
+    return <span className="tap-name">{`${u}/${r}/`}</span>;
+    /* jshint ignore:end */
+  },
+  name: function() {
+    let parts = this.props.name.split("/");
+    return parts[parts.length-1];
+  },
+  render: function() {
+    /* jshint ignore:start */
+    return (
+      <span className="name">{this.tapName()}{this.name()}</span>
+    );
+    /* jshint ignore:end */
+  }
+});
 
 let Formula = React.createClass({
   binaries: function() {
@@ -11,10 +34,11 @@ let Formula = React.createClass({
     return n === 0 ? "" : n > 1 ? "Binaries:" : "Binary:";
   },
   render: function() {
+    /* jshint ignore:start */
     return (
       <li className="formula">
         <h2 className="title">
-          <span className="name">{this.props.name}</span>
+          <Name name={this.props.name} />
           {" "}
           (<span className="version">{this.props.version}</span>)
         </h2>
@@ -24,10 +48,11 @@ let Formula = React.createClass({
         <p className="desc">{this.props.desc}</p>
         {this.binaries()}
         <ul className="executables">
-          {this.props.exes.map(e => <li>{e}</li>)}
+          {this.props.exes.map(e => <li key={e}>{e}</li>)}
         </ul>
       </li>
     );
+    /* jshint ignore:end */
   }
 });
 
@@ -39,17 +64,23 @@ let Results = React.createClass({
     });
   },
   reset: function() { this.setState({ results: [] }); },
-  render: function() { return (
-    <ol>
-      {this.state.results.map(f =>
-        <Formula name={f.n} desc={f.d} exes={f.e}
-                 homepage={f.h} version={f.v} />
-      )}
-    </ol>
-  );}
+  render: function() {
+    /* jshint ignore:start */
+    return (
+      <ol>
+        {this.state.results.map(f =>
+          <Formula name={f.n} desc={f.d} exes={f.e} homepage={f.h}
+                   version={f.v} key={f.n} />
+        )}
+      </ol>
+    );
+    /* jshint ignore:end */
+  }
 });
 
+// jshint ignore:start
 let results = React.render(<Results/>, document.getElementById("results"));
+// jshint ignore:end
 
 let q = document.getElementById("q"),
     prevquery = "";
@@ -60,7 +91,7 @@ function getTerms(query) {
 }
 
 function escapeRegExp(r) {
-  return r.replace(/([.(){}\[\]*+?^$])/g, "\\$1")
+  return r.replace(/([.(){}\[\]*+?^$])/g, "\\$1");
 }
 
 function expandPartialTerm(partial) {
@@ -70,7 +101,7 @@ function expandPartialTerm(partial) {
 
   for (var t in s.t) {
     if (r.test(t)) {
-      if (max-- == 0) {
+      if (max-- === 0) {
         break;
       }
       ts.push(t);
@@ -180,19 +211,19 @@ function _searchCallback() {
 
   terms = getTerms(query);
 
-  if (terms.length == 0) {
-    return
+  if (terms.length === 0) {
+    return;
   }
 
   var lastTerm = terms[terms.length-1];
-  if (lastTerm == "") {
+  if (lastTerm === "") {
     terms.pop();
   }
 
   var docs = sortDocs(terms, matchingDocs(terms));
 
   // if no results, try with partial matching
-  if (docs.length == 0) {
+  if (docs.length === 0) {
     terms = terms.concat(expandPartialTerm(lastTerm));
     docs = sortDocs(terms, matchingDocs(terms));
   }
@@ -202,3 +233,4 @@ function _searchCallback() {
 
 q.addEventListener("change", searchCallback, false);
 q.addEventListener("keyup", searchCallback, false);
+q.focus();

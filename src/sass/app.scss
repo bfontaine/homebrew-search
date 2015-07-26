@@ -1,9 +1,29 @@
 @import "vendor/_bootstrap";
 
+h1 {
+  margin-bottom: 60px;
+}
+
+.q-container {
+  margin-top: 20px;
+
+  .q {
+    margin: auto;
+    max-width: 40em;
+  }
+}
+
 #results ol {
   list-style-type: none;
 }
 
-.q-container {
-  max-width: 40em;
+.tap-name {
+  font-weight: normal;
+  color: #999;
+}
+
+.executables {
+  li {
+    font-family: menlo, monospace;
+  }
 }
