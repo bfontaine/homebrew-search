@@ -1,15 +1,16 @@
-var s = [[TERMS]];
+/*jslint esnext:true */
+let s = [[TERMS]];
 
-var React = require("./vendor/react.min");
+import React from "react";
 
-var baseRepoURL = "https://github.com/Homebrew/homebrew";
+let baseRepoURL = "https://github.com/Homebrew/homebrew";
 
-var Formula = React.createClass({
-  binaries: function() {
-    var n = this.props.exes.length;
+let Formula = React.createClass({
+  binaries: () => {
+    let n = this.props.exes.length;
     return n === 0 ? "" : n > 1 ? "Binaries:" : "Binary:";
   },
-  render: function() {
+  render: () => {
     return (
       <li class="formula">
         <h2 class="title">
@@ -23,46 +24,33 @@ var Formula = React.createClass({
         <p class="desc">{this.props.desc}</p>
         {this.binaries()}
         <ul class="executables">
-          {this.props.exes.map(function(e) {
-            return (
-              <li>{e}</li>
-            );
-          })}
+          {this.props.exes.map(e => <li>{e}</li>)}
         </ul>
       </li>
     );
   }
 });
 
-var Results = React.createClass({
-  getInitialState: function() {
-    return {results: []};
-  },
-  setResults: function(res) {
+let Results = React.createClass({
+  getInitialState: () => ({results: []}),
+  setResults: (res) =>
     this.setState({
       results: res.slice(0, 10),
-    });
-  },
-  reset: function() {
-    this.setState({
-      results: [],
-    });
-  },
-  render: function() {
-    return (
-      <ol>
-        {this.state.results.map(function(f) {
-          return <Formula name={f.n} desc={f.d} exes={f.e}
-                          homepage={f.h} version={f.v} />;
-        })}
-      </ol>
-    );
-  }
+    }),
+  reset: () => this.setState({ results: [] }),
+  render: () => (
+    <ol>
+      {this.state.results.map(f =>
+        <Formula name={f.n} desc={f.d} exes={f.e}
+                 homepage={f.h} version={f.v} />
+      )}
+    </ol>
+  )
 });
 
-var results = React.render(<Results/>, document.getElementById("results"));
+let results = React.render(<Results/>, document.getElementById("results"));
 
-var q = document.getElementById("q"),
+let q = document.getElementById("q"),
     prevquery = "";
 
 function getTerms(query) {
@@ -94,11 +82,11 @@ function expandPartialTerm(partial) {
 function matchingDocs(terms) {
   var docs = {};
 
-  terms.forEach(function(term) {
+  terms.forEach(term => {
     var idxs = s.t[term];
     if (!idxs || !idxs.length) { return; }
 
-    idxs.forEach(function(idx) {
+    idxs.forEach(idx => {
       docs[idx] = s.i[idx];
     });
   });
@@ -134,7 +122,7 @@ function scoreDocTerm(term, doc) {
 function scoreDocTerms(terms, doc) {
   var maxScore = 0;
 
-  terms.forEach(function(term) {
+  terms.forEach(term => {
     var s = scoreDocTerm(term, doc);
 
     if (s > maxScore) {
@@ -154,12 +142,12 @@ function sortDocs(terms, docs) {
     scored.push([doc, scoreDocTerms(terms, doc)]);
   }
 
-  return scored.sort(function(a, b) {
+  return scored.sort((a, b) => {
     var sa = a[1],
         sb = b[1];
 
     return sa == sb ? 0 : sa < sb ? 1 : -1;
-  }).map(function(s) { return s[0]; });
+  }).map(s => s[0]);
 }
 
 var searching = false;
