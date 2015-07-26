@@ -6,24 +6,24 @@ import React from "react";
 let baseRepoURL = "https://github.com/Homebrew/homebrew";
 
 let Formula = React.createClass({
-  binaries: () => {
+  binaries: function() {
     let n = this.props.exes.length;
     return n === 0 ? "" : n > 1 ? "Binaries:" : "Binary:";
   },
-  render: () => {
+  render: function() {
     return (
-      <li class="formula">
-        <h2 class="title">
-          <span class="name">{this.props.name}</span>
+      <li className="formula">
+        <h2 className="title">
+          <span className="name">{this.props.name}</span>
           {" "}
-          (<span class="version">{this.props.version}</span>)
+          (<span className="version">{this.props.version}</span>)
         </h2>
-        <ul class="meta-links">
+        <ul className="meta-links">
           <li><a href={this.props.homepage} rel="external nofollow">Homepage</a></li>
         </ul>
-        <p class="desc">{this.props.desc}</p>
+        <p className="desc">{this.props.desc}</p>
         {this.binaries()}
-        <ul class="executables">
+        <ul className="executables">
           {this.props.exes.map(e => <li>{e}</li>)}
         </ul>
       </li>
@@ -32,20 +32,21 @@ let Formula = React.createClass({
 });
 
 let Results = React.createClass({
-  getInitialState: () => ({results: []}),
-  setResults: (res) =>
-    this.setState({
+  getInitialState: function() { return {results: []}; },
+  setResults: function(res) {
+    return this.setState({
       results: res.slice(0, 10),
-    }),
-  reset: () => this.setState({ results: [] }),
-  render: () => (
+    });
+  },
+  reset: function() { this.setState({ results: [] }); },
+  render: function() { return (
     <ol>
       {this.state.results.map(f =>
         <Formula name={f.n} desc={f.d} exes={f.e}
                  homepage={f.h} version={f.v} />
       )}
     </ol>
-  )
+  );}
 });
 
 let results = React.render(<Results/>, document.getElementById("results"));
