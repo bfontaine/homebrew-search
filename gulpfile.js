@@ -36,3 +36,9 @@ gulp.task("js", function() {
     .pipe(replace("[[TERMS]]", fs.readFileSync("terms.json")))
     .pipe(gulp.dest("build/"));
 });
+
+gulp.task("watch", function() {
+  gulp.watch("src/sass/*.scss", ["css"]);
+});
+
+gulp.task("default", ["watch"]);
