@@ -12,7 +12,7 @@ On the `master` branch:
 
 On the `gh-pages` branch:
 
-    jsx -x jsx src build
-    ./scripts/gen.rb
+    gulp css js
 
-Then commit and push.
+Then commit and push. Unfortunately we must commit the files in `build/` to
+have them on GitHub pages.
