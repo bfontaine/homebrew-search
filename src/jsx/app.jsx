@@ -3,6 +3,8 @@ let s = [[TERMS]];
 
 import React from "react";
 
+const MAX_RESULTS = 40;
+
 let Name = React.createClass({
   tapName: function() {
     let name = this.props.name;
@@ -56,7 +58,7 @@ let Results = React.createClass({
   getInitialState: function() { return {results: []}; },
   setResults: function(res) {
     return this.setState({
-      results: res.slice(0, 15),
+      results: res.slice(0, MAX_RESULTS),
     });
   },
   reset: function() { this.setState({ results: [] }); },
