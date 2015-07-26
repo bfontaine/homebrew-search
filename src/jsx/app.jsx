@@ -3,8 +3,6 @@ let s = [[TERMS]];
 
 import React from "react";
 
-let baseRepoURL = "https://github.com/Homebrew/homebrew";
-
 let Name = React.createClass({
   tapName: function() {
     let name = this.props.name;
@@ -60,7 +58,7 @@ let Results = React.createClass({
   getInitialState: function() { return {results: []}; },
   setResults: function(res) {
     return this.setState({
-      results: res.slice(0, 10),
+      results: res.slice(0, 15),
     });
   },
   reset: function() { this.setState({ results: [] }); },
@@ -140,7 +138,7 @@ function matchingDocs(terms) {
   return docs;
 }
 
-function scoreDocTerm(term, doc) {
+function scoreDocTerm(term, doc, i) {
   // -1 if the formula is from a tap: put the core ones above
   let score = doc.n.indexOf("/") > -1 ? -1 : 0;
 
@@ -165,30 +163,34 @@ function scoreDocTerm(term, doc) {
   // we might want to add more cases here
   }
 
+  // term match document: 60
+  if (s.t[term] && s.t[term].indexOf(i) > -1) {
+    return score + 60;
+  }
+
   return score + 2;
 }
 
-function scoreDocTerms(terms, doc) {
-  var maxScore = 0;
+function scoreDocTerms(terms, doc, i) {
+  var score = 0;
 
   terms.forEach(term => {
-    var s = scoreDocTerm(term, doc);
-
-    if (s > maxScore) {
-      maxScore = s;
-    }
+    score += scoreDocTerm(term, doc, i);
   });
 
-  return maxScore;
+  return score;
 }
+// debug
+window.sdt = scoreDocTerms;
+window.s = s;
 
 function sortDocs(terms, docs) {
   var scored = [],
       doc;
 
-  for (var name in docs) {
-    doc = docs[name];
-    scored.push([doc, scoreDocTerms(terms, doc)]);
+  for (var i in docs) {
+    doc = docs[i];
+    scored.push([doc, scoreDocTerms(terms, doc, +i)]);
   }
 
   return scored.sort((a, b) => {
