@@ -204,7 +204,7 @@ function _searchCallback() {
   }
   prevquery = query;
 
-  if (query.length < 2) {
+  if (query.length === 0) {
     results.reset();
     return;
   }
@@ -223,7 +223,7 @@ function _searchCallback() {
   var docs = sortDocs(terms, matchingDocs(terms));
 
   // if no results, try with partial matching
-  if (docs.length === 0) {
+  if (docs.length === 0 && query.length > 1) {
     terms = terms.concat(expandPartialTerm(lastTerm));
     docs = sortDocs(terms, matchingDocs(terms));
   }
