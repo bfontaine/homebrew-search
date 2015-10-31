@@ -201,7 +201,10 @@ class DB
   end
 
   def import_executables
-    s = Pathname.new(HOMEBREW_PREFIX)/"Library/Taps/homebrew/homebrew-command-not-found/executables.txt"
+    require "cmd/tap"
+    tap = Tap.fetch("homebrew", "command-not-found")
+    install_tap(tap.user, tap.repo) unless tap.installed?
+    s = tap.path/"executables.txt"
     return {} unless s.exist?
 
     ex = {}
