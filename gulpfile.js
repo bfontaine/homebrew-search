@@ -25,7 +25,9 @@ gulp.task("css", function() {
 gulp.task("js", function() {
   var b = browserify({
     entries: "src/jsx/app.jsx",
-    transform: [babelify]
+    transform: [babelify.configure({
+      presets: ["env", "react"],
+    })]
   });
 
   return b.bundle()
