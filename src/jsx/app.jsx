@@ -3,9 +3,14 @@ let s = [[TERMS]];
 
 import React from "react";
 
+// https://teamtreehouse.com/community/i-get-this-error-react2defaultcreateclass-is-not-a-function-and-reactproptypes-is-undefined
+import createClass from "create-react-class";
+// https://stackoverflow.com/questions/36376146/reactdom2-default-render-is-not-a-function
+import ReactDOM from "react-dom";
+
 const MAX_RESULTS = 40;
 
-let Name = React.createClass({
+let Name = createClass({
   tapName: function() {
     let name = this.props.name;
 
@@ -28,7 +33,7 @@ let Name = React.createClass({
   }
 });
 
-let Formula = React.createClass({
+let Formula = createClass({
   binaries: function() {
     let n = this.props.exes.length;
     return n === 0 ? "" : n > 1 ? "Binaries:" : "Binary:";
@@ -54,7 +59,7 @@ let Formula = React.createClass({
   }
 });
 
-let Results = React.createClass({
+let Results = createClass({
   getInitialState: function() { return {results: []}; },
   setResults: function(res) {
     return this.setState({
@@ -77,7 +82,7 @@ let Results = React.createClass({
 });
 
 // jshint ignore:start
-let results = React.render(<Results/>, document.getElementById("results"));
+let results = ReactDOM.render(<Results/>, document.getElementById("results"));
 // jshint ignore:end
 
 let q = document.getElementById("q"),
