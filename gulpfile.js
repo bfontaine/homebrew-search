@@ -5,7 +5,7 @@ var
     buffer       = require("vinyl-buffer"),
     fs           = require("fs"),
     gulp         = require("gulp"),
-    gutil        = require("gulp-util"),
+    log          = require("fancy-log"),
     minifycss    = require("gulp-minify-css"),
     replace      = require("gulp-replace"),
     sass         = require("gulp-sass"),
@@ -32,7 +32,7 @@ gulp.task("js", function() {
     .pipe(source("app.js"))
     .pipe(buffer())
     .pipe(uglify())
-    .on("error", gutil.log)
+    .on("error", log)
     .pipe(replace("[[TERMS]]", fs.readFileSync("terms.json")))
     .pipe(gulp.dest("build/"));
 });
