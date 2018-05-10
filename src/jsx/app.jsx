@@ -144,8 +144,17 @@ function matchingDocs(terms) {
 }
 
 function scoreDocTerm(term, doc, i) {
+  let score = 0;
+
   // -1 if the formula is from a tap: put the core ones above
-  let score = doc.n.indexOf("/") > -1 ? -1 : 0;
+  if (doc.n.indexOf("/") > -1) {
+    score--;
+  }
+
+  // -1 if the formula is e.g. foo@2.2 unless there's a @ in the term search
+  if (doc.n.indexOf("@") > -1 && term.indexOf("@") == -1) {
+    score--;
+  }
 
   // term == name: 100
   if (term == doc.n) {
