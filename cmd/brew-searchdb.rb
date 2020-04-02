@@ -70,7 +70,7 @@ class Item
   attr_reader :name, :desc, :version, :homepage
 
   def initialize(f)
-    @name = f.full_name
+    @name = f.name
     @desc = f.desc || ""
     @version = f.version.to_s
     @homepage = f.homepage
@@ -180,7 +180,7 @@ class DB
     idx = 0
 
     Formula.each do |f|
-      next unless f.desc && f.stable
+      next unless f.desc && f.stable && f.core_formula?
       i = Item.new(f)
       h = i.to_h
       exs = h[:e] = f.keg_only? ? [] : executables.fetch(f.full_name, [])
