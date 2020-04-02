@@ -10,6 +10,13 @@ import ReactDOM from "react-dom";
 
 const MAX_RESULTS = 40;
 
+const NAME = 0,
+      DESC = 1,
+      VERSION = 2,
+      HOMEPAGE = 3,
+      EXECUTABLES = 4;
+
+
 let Formula = createClass({
   binaries: function() {
     let n = this.props.exes.length;
@@ -49,8 +56,12 @@ let Results = createClass({
     return (
       <ol>
         {this.state.results.map(f =>
-          <Formula name={f.n} desc={f.d} exes={f.e} homepage={f.h}
-                   version={f.v} key={f.n} />
+          <Formula name={f[NAME]}
+                   desc={f[DESC]}
+                   exes={f[EXECUTABLES]}
+                   homepage={f[HOMEPAGE]}
+                   version={f[VERSION]}
+                   key={f[NAME]} />
         )}
       </ol>
     );
