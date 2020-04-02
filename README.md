@@ -1,6 +1,6 @@
 # Homebrew Search
 
-An unofficial Web-based search engine for [Homebrew](http://brew.sh/) formulae.
+An unofficial Web-based search engine for [Homebrew](https://brew.sh/) formulae.
 
 ## DB
 
