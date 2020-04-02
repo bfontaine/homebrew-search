@@ -39,8 +39,9 @@ gulp.task("js", function() {
     .pipe(gulp.dest("build/"));
 });
 
-gulp.task("watch", function() {
+function watch() {
   gulp.watch("src/sass/*.scss", ["css"]);
-});
+}
 
-gulp.task("default", ["watch"]);
+gulp.task("watch", watch);
+gulp.task("default", watch);
