@@ -68,12 +68,14 @@ ALIASES = {
 
 class Item
   attr_reader :name, :desc, :version, :homepage
+  attr_accessor :executables
 
   def initialize(f)
     @name = f.name
     @desc = f.desc || ""
     @version = f.version.to_s
     @homepage = f.homepage
+    @executables = []
   end
 
   def terms
@@ -81,12 +83,29 @@ class Item
   end
 
   def to_h
-    {:n => @name, :d => @desc, :v => @version, :h => @homepage}
+    {:n => @name,
+     :d => @desc,
+     :v => @version,
+     :h => @homepage,
+     :e => @executables}
+  end
+
+  def to_a
+    [@name, @desc, @version, @homepage, @executables]
   end
 
   private
 
   def _terms
+    (item_terms + executables_terms).uniq
+  end
+
+  def executables_terms
+    # only keep max 10 executables, the longuest ones first
+    executables.sort {|a,b| b.length <=> a.length }.slice(0, 10).map(&:downcase)
+  end
+
+  def item_terms
     s = Set.new (clean_desc.split(WS) + @name.split("/") - STOPWORDS)
     ALIASES.each_entry do |k,vs|
       if s.include? k
@@ -182,15 +201,11 @@ class DB
     Formula.each do |f|
       next unless f.desc && f.stable && f.core_formula?
       i = Item.new(f)
-      h = i.to_h
-      exs = h[:e] = f.keg_only? ? [] : executables.fetch(f.full_name, [])
+      i.executables = executables.fetch(f.full_name, []) unless f.keg_only?
 
-      items << h
+      items << i.to_a
 
-      # only keep max 10 executables, the longuest ones first
-      exs_terms = exs.sort {|a,b| b.length <=> a.length }.slice(0, 10).map(&:downcase)
-
-      (i.terms + exs_terms).uniq.each do |t|
+      i.terms.each do |t|
         (terms[t] ||= []) << idx
       end
 
