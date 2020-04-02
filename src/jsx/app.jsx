@@ -10,40 +10,17 @@ import ReactDOM from "react-dom";
 
 const MAX_RESULTS = 40;
 
-let Name = createClass({
-  tapName: function() {
-    let name = this.props.name;
-
-    if (name.indexOf("/") == -1) { return ""; }
-    let [u, r, _] = name.split("/");
-    /* jshint ignore:start */
-    return <span className="tap-name">{`${u}/${r}/`}</span>;
-    /* jshint ignore:end */
-  },
-  name: function() {
-    let parts = this.props.name.split("/");
-    return parts[parts.length-1];
-  },
-  render: function() {
-    /* jshint ignore:start */
-    return (
-      <span className="name">{this.tapName()}{this.name()}</span>
-    );
-    /* jshint ignore:end */
-  }
-});
-
 let Formula = createClass({
   binaries: function() {
     let n = this.props.exes.length;
-    return n === 0 ? "" : n > 1 ? "Binaries:" : "Binary:";
+    return n === 0 ? "" : n > 1 ? "Executables:" : "Executable:";
   },
   render: function() {
     /* jshint ignore:start */
     return (
       <li className="formula">
         <h2 className="title">
-          <Name name={this.props.name} />
+          <span className="name">{this.props.name}</span>
           {" "}
           (<span className="version">{this.props.version}</span>)
         </h2>
@@ -195,8 +172,8 @@ function scoreDocTerms(terms, doc, i) {
   return score;
 }
 // debug
-window.sdt = scoreDocTerms;
-window.s = s;
+// window.sdt = scoreDocTerms;
+// window.s = s;
 
 function sortDocs(terms, docs) {
   var scored = [],
